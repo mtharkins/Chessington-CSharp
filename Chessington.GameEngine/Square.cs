@@ -1,4 +1,6 @@
-﻿namespace Chessington.GameEngine;
+﻿using System;
+
+namespace Chessington.GameEngine;
 
 public struct Square
 {
@@ -48,5 +50,10 @@ public struct Square
     public override string ToString()
     {
         return $"Row {Row}, Col {Col}";
+    }
+
+    internal static Square At(int row, object value)
+    {
+        throw new NotImplementedException();
     }
 }
