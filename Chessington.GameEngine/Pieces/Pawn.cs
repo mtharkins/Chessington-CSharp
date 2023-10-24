@@ -1,41 +1,57 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
+using Chessington.GameEngine.Pieces;
 using System.Linq;
-using System.Xml.XPath;
 
-namespace Chessington.GameEngine.Pieces;
-
-public class Pawn : Piece
+namespace Chessington.GameEngine.Pieces
 {
-    public Pawn(Player player)
-        : base(player)
+    public class Pawn : Piece
     {
-
-    }
-
-    public override IEnumerable<Square> GetAvailableMoves(Board board)
-    {
-        var currentSquare = board.FindPiece(this);
-        var result = new List<Square>();
-        if (Player == Player.Black)
+        public Pawn(Player player)
+            : base(player)
         {
-            if(currentSquare.Row == 1) 
-            {
-                 result.Add(Square.At(currentSquare.Row +2, currentSquare.Col));
-            }
-           result.Add(Square.At(currentSquare.Row +1, currentSquare.Col));
         }
 
-        else
-
+        public override IEnumerable<Square> GetAvailableMoves(Board board)
         {
-            if(currentSquare.Row == 7) 
+            var currentSquare = board.FindPiece(this);
+            var result = new List<Square>();
+            if (Player == Player.Black)
             {
-                 result.Add(Square.At(currentSquare.Row -2, currentSquare.Col));
-            }
-           result.Add(Square.At(currentSquare.Row -1, currentSquare.Col));
-        }
+                // Black pawns move down (increase the row number).
+                Square squarePlusOne = Square.At(currentSquare.Row + 1, currentSquare.Col);
+                if (board.GetPiece(squarePlusOne) == null)
+                {
+                    result.Add(Square.At(currentSquare.Row + 1, currentSquare.Col));
+                }
 
-        return result;
+                if (currentSquare.Row == 1) // Initial move for black pawns.
+                {
+                    Square squarePlusTwo = Square.At(currentSquare.Row + 2, currentSquare.Col);
+                    if (board.GetPiece(squarePlusTwo) == null && board.GetPiece(squarePlusOne) == null)
+                    {
+                        result.Add(Square.At(currentSquare.Row + 2, currentSquare.Col));
+                    }
+                }
+            }
+            else
+            {
+                // White pawns move up (decrease the row number).
+                Square squarePlusOne = Square.At(currentSquare.Row - 1, currentSquare.Col);
+                if (board.GetPiece(squarePlusOne) == null)
+                {
+                    result.Add(Square.At(currentSquare.Row - 1, currentSquare.Col));
+                }
+
+                if (currentSquare.Row == 6) // Initial move for white pawns.
+                {
+                    Square squarePlusTwo = Square.At(currentSquare.Row - 2, currentSquare.Col);
+                    if (board.GetPiece(squarePlusTwo) == null && board.GetPiece(squarePlusOne) == null)
+                    {
+                        result.Add(Square.At(currentSquare.Row - 2, currentSquare.Col));
+                    }
+                }
+            }
+            return result;
+        }
     }
-};
+}

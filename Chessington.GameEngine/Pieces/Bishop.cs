@@ -11,31 +11,43 @@ public class Bishop : Piece
     }
 
     public override IEnumerable<Square> GetAvailableMoves(Board board)
-    {
-        var currentSquare = board.FindPiece(this);
-        var result = new List<Square>();
-
-        for (int i = currentSquare.Row + 1, k = currentSquare.Col + 1; i < 8 && k < 8; i++, k++)
         {
-            result.Add(Square.At(i, k));
-        }
+            var currentSquare = board.FindPiece(this);
+            var result = new List<Square>();
+            
+            var directions = new List<Square>
+            {
+                Square.At(1, 1), 
+                Square.At(-1, 1),
+                Square.At(-1, -1), 
+                Square.At(1, -1) 
+            };
 
-        for (int i = currentSquare.Row + 1, k = currentSquare.Col - 1; i < 8 && k >= 0; i++, k--)
-        {
-            result.Add(Square.At(i, k));
-        }
+            foreach (var direction in directions)
+            {
+                for (int i = 1; i <= 7; i++)
+                {
+                    var square = Square.At(currentSquare.Row + i * direction.Row, currentSquare.Col + i * direction.Col);
+                    if (square.Row > 7 || square.Row < 0 || square.Col > 7 || square.Col < 0)
+                    {
+                        break;
+                    }
+                    
+                    var pieceAtSquare = board.GetPiece(square);
+                    if (pieceAtSquare != null)
+                    {
+                        if (pieceAtSquare.Player != Player)
+                        {
+                            result.Add(square);
+                        }
+                        break;
+                    }
+                    
+                    result.Add(square);
+                }
+            }
 
-        for (int i = currentSquare.Row - 1, k = currentSquare.Col + 1; i >= 0 && k < 8; i--, k++)
-        {
-            result.Add(Square.At(i, k));
+            return result;
         }
-
-        for (int i = currentSquare.Row - 1, k = currentSquare.Col - 1; i >= 0 && k >= 0; i--, k--)
-        {
-            result.Add(Square.At(i, k));
-        }
-
-        return result;
     }
 
-}
