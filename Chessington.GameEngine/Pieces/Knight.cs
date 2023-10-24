@@ -16,28 +16,37 @@ namespace Chessington.GameEngine.Pieces
             var currentSquare = board.FindPiece(this);
             var result = new List<Square>();
 
-            // Define the possible Knight move offsets.
-            int[] rowOffsets = { -2, -1, 1, 2 };
-            int[] colOffsets = { -2, -1, 1, 2 };
-
-            foreach (var rowOffset in rowOffsets)
+            var directions = new List<Square>
             {
-                foreach (var colOffset in colOffsets)
+                Square.At(1, 2),
+                Square.At(-1, 2),
+                Square.At(2, 1),
+                Square.At(2, -1),
+                Square.At(1, -2),
+                Square.At(-1, -2),
+                Square.At(-2, 1),
+                Square.At(-2, -1)
+            };
+
+            foreach (var direction in directions)
+            {
+                var square = Square.At(currentSquare.Row + direction.Row, currentSquare.Col + direction.Col);
+                if (square.Row > 7 || square.Row < 0 || square.Col > 7 || square.Col < 0)
                 {
-                    if (Math.Abs(rowOffset) != Math.Abs(colOffset))
-                    {
-                        int newRow = currentSquare.Row + rowOffset;
-                        int newCol = currentSquare.Col + colOffset;
-
-                        // Check if the new position is within the board bounds.
-                        if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8)
-                        {
-                            result.Add(Square.At(newRow, newCol));
-                        }
-                    }
+                    continue;
                 }
-            }
 
+                var pieceAtSquare = board.GetPiece(square);
+                if (pieceAtSquare != null)
+                {
+                    if (pieceAtSquare.Player != Player)
+                    {
+                        result.Add(square);
+                    }
+                    break;
+                }
+                result.Add(square);
+            }
             return result;
         }
     }
